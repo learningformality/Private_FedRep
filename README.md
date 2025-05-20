@@ -1,5 +1,3 @@
-# Private_FedRep
-
 # Private Federated Learning Algorithm Comparison
 
 This code compares two private federated learning algorithms: Private FedRep and Priv-AltMin (from Jain et al., 2021). Both utilize user-level differential privacy to enforce privacy in a federated learning setting. Both algorithms use the same privacy settings ($\epsilon, \delta$) for a fair comparison.
