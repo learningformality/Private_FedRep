@@ -568,15 +568,6 @@ def local_dp_gradient_descent(X_train, y_train, num_steps, noise_std, max_norm, 
     """
     d = X_train.size(1)
     w = torch.zeros(d, requires_grad=False)
-    '''
-    # Use precomputed batches if given
-    if gd_batches is None:
-        batch_size = X_train.size(0) // num_steps
-        gd_batches = [
-            (X_train[i*batch_size:(i+1)*batch_size],
-             y_train[i*batch_size:(i+1)*batch_size])
-            for i in range(num_steps)
-        ]'''
 
     num_batches = len(gd_batches)
 
@@ -985,50 +976,6 @@ def run_experiment_vary_epsilon():
         mse_local_gd = np.mean(user_mse_list)
         mse_results_gd.append(mse_local_gd)
         print(f"Local DP GD MSE: {mse_local_gd}")
-        '''
-        # (c) Aggregated single model in R^d
-        print(f"Aggregated GD, noise_std={noise_std_dp_fedrep:.4f}")
-        w_agg = torch.zeros(d)
-        for rd in range(fedrep_num_rounds):
-            grad_sum = torch.zeros(d)
-            for u in range(num_users):
-                X_u = X_train_list[u]
-                y_u = y_train_list[u]
-                pred_u = X_u.mv(w_agg)
-                grad_u = 2 * X_u.t().mv(pred_u - y_u) / X_u.shape[0]
-                grad_u = clip(grad_u, max_grad_norm)
-                grad_sum += grad_u
-            grad_sum /= num_users
-            grad_sum += torch.randn_like(grad_sum) * noise_std_dp_fedrep
-            w_agg = w_agg - 0.1 * grad_sum
-
-        # MSE test
-        agg_mse_list = []
-        for u in range(num_users):
-            pred_test_agg = X_test_list[u].mv(w_agg)
-            agg_mse = torch.mean((pred_test_agg - y_test_list[u]) ** 2).item()
-            agg_mse_list.append(agg_mse)
-        mse_agg = np.mean(agg_mse_list)
-        mse_results_agg.append(mse_agg)
-        print(f"Aggregated GD MSE: {mse_agg}")
-
-        # (d) DP FedAvg
-        print(f"DP FedAvg, noise_std={noise_std_dp_fedrep:.4f}")
-        w_fedavg = train_fedavg_dp(
-            X_train_list=X_train_list,
-            y_train_list=y_train_list,
-            num_rounds=fedrep_num_rounds,
-            local_epochs=1,
-            global_lr=fedrep_global_lr,
-            max_grad_norm=max_grad_norm,
-            noise_std=noise_std_dp_fedrep,
-            init_w=None,
-            batch_size=fedrep_batch_size
-        )
-        mse_fedavg = compute_test_mse_fedavg(
-            w_fedavg, X_test_list, y_test_list)
-        mse_results_fedavg.append(mse_fedavg)
-        print(f"DP FedAvg MSE: {mse_fedavg}")'''
 
         # (e) APriv-AltMin (NEW)
         # ======================
@@ -1036,9 +983,7 @@ def run_experiment_vary_epsilon():
         X_np_list = [X_train_list[u].numpy() for u in range(num_users)]
         y_np_list = [y_train_list[u].numpy() for u in range(num_users)]
         U_init_np = U_init.detach().numpy()  # (d, k)
-        '''
-        print(
-            f"APriv-AltMin, eps={eps}, T={apriv_T}, max_norm={apriv_max_norm}")'''
+        
         #  2) Run the DP alt-min approach on training data
         U_priv, v_dict = apriv_altmin_ols_dp(
             X_train_list=X_np_list,
