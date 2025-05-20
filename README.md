@@ -28,7 +28,7 @@ The main script `run_experiment_vary_epsilon` runs this comparison. The code can
 * **Spectral Initialization (`model_init`)**: Calculates the starting $U$ using a traditional technique with guarantees supplied by the Davis-Kahan Sine Theorem.
 * **Evaluation (`compute_test_mse`, `run_experiment_vary_epsilon`)**:
     * `compute_test_mse`: Checks how well the model performs by calculating the average Mean Squared Error (MSE) on test data.
-    * `run_experiment_vary_epsilon`: The exeuction of the script.
+    * `run_experiment_vary_epsilon`: The execution of the script.
 
 ## Dependencies
 
@@ -40,7 +40,7 @@ The main script `run_experiment_vary_epsilon` runs this comparison. The code can
 ## Usage
 
 To run the experiment, just run the Python script after dealing with dependencies via virtual environments or otherwise.
-The `run_experiment_vary_epsilon()` function in the script handles everything. It runs a reasonable test case automatically without the local training. We use non-private FedRep as a baseline
+The `run_experiment_vary_epsilon()` function in the script handles everything. It runs a reasonable test case automatically with a non-private local training comparison. We use non-private FedRep as a baseline
 for Private FedRep and Priv-AltMin since it performs nearly identically to non-private AltMin.
 
 ```bash
